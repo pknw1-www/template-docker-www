@@ -1,4 +1,4 @@
-name: commit
+name: push
 
 on:
   push:
