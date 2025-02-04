@@ -1,4 +1,4 @@
-name: commit
+name: Merge
 
 on:
   push:
@@ -30,8 +30,8 @@ jobs:
           TIMESTAMP=$(date +%s)
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP} .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP}
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${{ inputs.build_version }} .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${{ inputs.build_version }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:lastest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:latest
       - uses: actions/upload-artifact@v4
         with:
           name: docker-compose
