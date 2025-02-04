@@ -1,4 +1,4 @@
 :80 {
-        root * /var/www
+        root * /publish
         file_server
 }
