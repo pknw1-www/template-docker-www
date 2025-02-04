@@ -3,6 +3,9 @@ name: commit
 on:
   push:
     branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
       - '!main'
 
 
@@ -21,6 +24,7 @@ jobs:
         run: |
           sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
           sed -i 's/latest/dev/g' docker-compose.yml
+          sed -i 's/-ENV/-dev/g' docker-compose.yml
       - name: Build and push Docker Dev
         run: |
           TIMESTAMP=$(date +%s)
