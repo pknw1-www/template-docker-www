@@ -37,7 +37,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${{ inputs.build_version }}
       - name: Build compose
         run: |
-          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}' docker-compose.yml
+          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
       - uses: actions/upload-artifact@v4
         with:
           name: docker-compose
