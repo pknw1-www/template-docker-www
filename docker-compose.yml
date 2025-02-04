@@ -1,0 +1,15 @@
+services:
+  caddy-REPO:
+    networks:
+      - proxy
+    image: pknw1/REPO:latest
+    container_name: caddy-REPO
+    hostname: caddy-REPO
+    environment:
+      - VIRTUAL_HOST=REPO
+      - VIRTUAL_PORT=80
+
+networks:
+  proxy:
+    external: true
+    name: proxy
