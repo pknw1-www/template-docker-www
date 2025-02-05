@@ -51,10 +51,20 @@ jobs:
           echo "${{ secrets.TAILSCALE_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
       - name: executing remote ssh commands using password
+        if: ${{ vars.DIRECTORY_OVERRIDE == '' }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.TAILSCALE_SSH_SERVER }}
           username:  ${{ secrets.TAILSCALE_SSH_USER }}
           key: ${{ secrets.TAILSCALE_SSH_KEY }}
           port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
-          script: cd ${{ secrets.DOCKER_ROOT }}/${{ steps.repo-name.outputs.repository-name }} && docker compose down && docker compose pull  && docker compose up -d
+          script: cd cd ${{ secrets.DOCKER_ROOT }}/${{ steps.repo-name.outputs.repository-name }} && docker compose down && docker compose pull && docker compose up -d
+      - name: executing remote ssh commands using password
+        if: ${{ vars.DIRECTORY_OVERRIDE != '' }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
+          username:  ${{ secrets.TAILSCALE_SSH_USER }}
+          key: ${{ secrets.TAILSCALE_SSH_KEY }}
+          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
+          script: cd cd ${{ secrets.DOCKER_ROOT }}/${{ vars.DIRECTORY_OVERRIDE }} && docker compose down && docker compose pull && docker compose up -d
