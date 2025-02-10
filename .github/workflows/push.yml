@@ -22,22 +22,24 @@ jobs:
           string-case: 'lowercase'
       - name: Build compose
         run: |
-          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
+          sed -i 's/REPO_NAME/${{ vars.URL }}/g' docker-compose.yml
           sed -i 's/latest/dev/g' docker-compose.yml
           sed -i 's/-ENV/-dev/g' docker-compose.yml
           sed -i 's/display: flex/display: none/g' publish/*html
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push Docker Dev
         run: |
           TIMESTAMP=$(date +%s)
           echo ${TIMESTAMP} > publish/version.html
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP} .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:dev .
-          docker save --output="${{ steps.repo-name.outputs.repository-name }}.tar" ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:dev
+          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.URL }}:${TIMESTAMP} .
+          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.URL }}:dev .
+          docker push ${{ vars.DOCKERHUB_USERNAME }}//${{ vars.URL }}:latest
       - uses: actions/upload-artifact@v4
         with:
-          name: docker-compose
+          name: docker-compose-dev
           path: docker-compose.yml
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.repo-name.outputs.repository-name }}
-          path: ${{ steps.repo-name.outputs.repository-name }}.tar
+  
