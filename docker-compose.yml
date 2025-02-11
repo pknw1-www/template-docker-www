@@ -1,12 +1,12 @@
 services:
-  caddy-REPO_NAME-ENV:
+  caddy-REPO_NAME:
     networks:
       - proxy
-    image: pknw1/REPO_NAME:latest
-    container_name: caddy-REPO_NAME-ENV
-    hostname: caddy-REPO_NAME-ENV
+    image: pknw1/DOCKER_IMAGE:latest
+    container_name: caddy-URL
+    hostname: caddy-URL
     environment:
-      - VIRTUAL_HOST=REPO_NAME-ENV
+      - VIRTUAL_HOST=URL
       - VIRTUAL_PORT=80
 
 networks:
