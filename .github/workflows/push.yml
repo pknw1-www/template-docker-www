@@ -37,7 +37,7 @@ jobs:
           echo ${TIMESTAMP} > publish/version.html
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.URL }}:${TIMESTAMP} .
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.URL }}:dev .
-          docker push ${{ vars.DOCKERHUB_USERNAME }}//${{ vars.URL }}:latest
+          docker push ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.URL }}:dev
       - uses: actions/upload-artifact@v4
         with:
           name: docker-compose-dev
