@@ -15,8 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_ORG_TOKEN }}
       - name: Get repository name
         id: repo-name
         uses: MariachiBear/get-repo-name-action@v1.1.0
