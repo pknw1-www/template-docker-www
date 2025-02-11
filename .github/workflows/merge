@@ -21,10 +21,8 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build compose
+      - name: fix banner
         run: |
-          sed -i 's/REPO_NAME/${{ vars.URL }}/g' docker-compose.yml
-          sed -i 's/-ENV//g' docker-compose.yml
           sed -i 's/display: flex/display: none/g' publish/*html
       - name: Build and push Docker images
         run: |
@@ -34,10 +32,6 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.URL }}:${TIMESTAMP}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.URL }}:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.URL }}:latest
-      - uses: actions/upload-artifact@v4
-        with:
-          name: docker-compose
-          path: docker-compose.yml
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:

@@ -11,7 +11,7 @@ on:
         default: '.pknw1.co.uk'
 
 jobs:
-  docker_build:
+  init:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -31,6 +31,11 @@ jobs:
           name: 'url'
           value: ${{ inputs.url }}
           token: ${{ secrets.GH_ORG_TOKEN }}
+      - uses: action-pack/set-variable@v1
+        with:
+          name: 'folder_name'
+          value: ${{ inputs.folder_name }}
+          token: ${{ secrets.GH_ORG_TOKEN }}
       - name: create docker-compose
         run: | 
           cp docker-compose.yml docker-compose-dev.yml
@@ -44,7 +49,6 @@ jobs:
         run: |
           mv .github/workflows/push .github/workflows/push.yml
           mv .github/workflows/merge .github/workflows/merge.yml
-          mv .github/workflows/manual .github/workflows/manual.yml
           rm .github/workflows/init.yml
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
