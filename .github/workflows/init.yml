@@ -1,0 +1,50 @@
+name: Init
+
+on:
+  workflow_dispatch:
+    inputs:
+      folder_name:
+        description: 'folder name'
+        default: 'test-www'
+      url:
+        description: 'URL'
+        default: '.pknw1.co.uk'
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get repository name
+        id: repo-name
+        uses: MariachiBear/get-repo-name-action@v1.1.0
+        with:
+          with-owner: 'false'
+          string-case: 'lowercase'
+      - uses: action-pack/set-variable@v1
+        with:
+          name: 'url'
+          value: ${{ inputs.url }}
+          token: ${{ secrets.GH_ORG_TOKEN }}
+      - name: create docker-compose
+        run: | 
+          cp docker-compose.yml docker-compose-dev.yml
+          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
+          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}-dev/g' docker-compose-dev.yml
+          sed -i 's/DOCKER_IMAGE/${{ inputs.url }}/g' docker-compose*
+          sed -i 's/latest/dev/g' docker-compose-dev.yml
+          sed -i 's/URL/${{ inputs.url }}/g' docker-compose.yml
+          sed -i 's/URL/dev-${{ inputs.url }}/g' docker-compose-dev.yml
+      - name: remove init
+        run: |
+          mv .github/workflows/push .github/workflows/push.yml
+          mv .github/workflows/merge .github/workflows/merge.yml
+          mv .github/workflows/manual .github/workflows/manual.yml
+          rm .github/workflows/init.yml
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Updated compose files
+          push_options: '--force'
+          branch: main
